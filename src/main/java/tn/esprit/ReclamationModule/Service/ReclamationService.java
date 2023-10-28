@@ -1,4 +1,5 @@
 package tn.esprit.ReclamationModule.Service;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.update.*;
@@ -8,8 +9,15 @@ import org.springframework.stereotype.Service;
 import tn.esprit.ReclamationModule.model.Reclamation;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
+import tn.esprit.ReclamationModule.model.ReclamationDateAscComparator;
+
 import javax.annotation.PostConstruct;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,8 +37,9 @@ public class ReclamationService {
         ontologyModel = ModelFactory.createDefaultModel();
         FileManager.get().readModel(ontologyModel, ONTOLOGY_FILE);
     }
+
     public void create(Reclamation reclamation) {
-        if(reclamation.getTitle() == null || reclamation.getDescription() == null) {
+        if (reclamation.getTitle() == null || reclamation.getDescription() == null) {
             throw new IllegalArgumentException("Title or Description cannot be null");
         }
         String insertQueryStr =
@@ -60,7 +69,7 @@ public class ReclamationService {
 
         try {
             ResultSet results = qexec.execSelect();
-            while(results.hasNext()) {
+            while (results.hasNext()) {
                 QuerySolution sol = results.nextSolution();
                 Reclamation reclamation = new Reclamation();
                 reclamation.setId(sol.getResource("id").toString());
@@ -74,8 +83,9 @@ public class ReclamationService {
 
         return reclamations;
     }
+
     private String escapeSPARQL(String input) {
-        if(input == null) {
+        if (input == null) {
             return ""; // or however you want to handle null input
         }
         return input.replace("\\", "\\\\").replace("\"", "\\\"");
@@ -105,7 +115,6 @@ public class ReclamationService {
     }
 
 
-
     public void delete(String id) {
         String deleteQueryStr =
                 "PREFIX r: <http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4> " +
@@ -120,4 +129,38 @@ public class ReclamationService {
         deleteProcessor.execute();
     }
 
+    public List<Reclamation> searchByTitle(String title) {
+        String queryStr =
+                "PREFIX r: <" + NAMESPACE + "> " +
+                        "SELECT ?id ?title ?description WHERE { " +
+                        "  ?id r:title ?title . " +
+                        "  ?id r:description ?description . " +
+                        "  FILTER (regex(?title, '" + title + "', 'i'))" +
+                        "}";
+
+        Query query = QueryFactory.create(queryStr);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
+
+        List<Reclamation> reclamations = new ArrayList<>();
+
+        try {
+            ResultSet results = qexec.execSelect();
+            while (results.hasNext()) {
+                QuerySolution sol = results.nextSolution();
+                Reclamation reclamation = new Reclamation();
+                reclamation.setId(sol.getResource("id").toString());
+                reclamation.setTitle(sol.getLiteral("title").getString());
+                reclamation.setDescription(sol.getLiteral("description").getString());
+                reclamations.add(reclamation);
+            }
+        } finally {
+            qexec.close();
+        }
+
+        return reclamations;
+    }
+    public List<Reclamation> sortReclamationsByDateAsc(List<Reclamation> reclamations) {
+        Collections.sort(reclamations, new ReclamationDateAscComparator());
+        return reclamations;
+    }
 }

@@ -2,10 +2,13 @@ package tn.esprit.ReclamationModule.model;
 
 import java.util.UUID;
 
+import java.util.Date;
+
 public class Reclamation {
     private String id;
     private String title;
     private String description;
+    private Date dateSoumission;
 
     // Getters
     public String getId() {
@@ -18,6 +21,10 @@ public class Reclamation {
 
     public String getDescription() {
         return description;
+    }
+
+    public Date getDateSoumission() {
+        return dateSoumission;
     }
 
     // Setters
@@ -33,9 +40,14 @@ public class Reclamation {
         this.description = description;
     }
 
-    // Vous pouvez également ajouter des constructeurs si nécessaire.
+    public void setDateSoumission(Date dateSoumission) {
+        this.dateSoumission = dateSoumission;
+    }
+
+    // Constructeurs
     public Reclamation() {
-        this.id = UUID.randomUUID().toString();  // Auto-generate ID using UUID
+        this.id = UUID.randomUUID().toString();
+        this.dateSoumission = new Date();  // Initialise avec la date actuelle
     }
 
     public Reclamation(String title, String description) {

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 import java.util.List;
 
 
@@ -24,6 +26,9 @@ public class ReclamationController {
     @PostMapping("/add")
     public ResponseEntity<String> create(@RequestBody Reclamation reclamation) {
         try {
+            // Ajouter la date de soumission ici
+            reclamation.setDateSoumission(new Date());
+
             reclamationService.create(reclamation);
             return ResponseEntity.ok("Reclamation created successfully with ID: " + reclamation.getId());
         } catch (Exception e) {
@@ -31,6 +36,9 @@ public class ReclamationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating reclamation: " + e.getMessage());
         }
     }
+
+    // ...
+
 
     @GetMapping("/all")
     public ResponseEntity<List<Reclamation>> getAllReclamations() {
@@ -59,6 +67,27 @@ public class ReclamationController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         reclamationService.delete(id);
         return ResponseEntity.ok().build();
+    }
+    @GetMapping("/search/{title}")
+    public ResponseEntity<List<Reclamation>> searchByTitle(@PathVariable String title) {
+        try {
+            List<Reclamation> reclamations = reclamationService.searchByTitle(title);
+            return ResponseEntity.ok(reclamations);
+        } catch (Exception e) {
+            // Gérer les erreurs ici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @GetMapping("/sortc")
+    public ResponseEntity<List<Reclamation>> sortReclamationsByDateAsc() {
+        try {
+            List<Reclamation> reclamations = reclamationService.getAllReclamations();
+            reclamations = reclamationService.sortReclamationsByDateAsc(reclamations);
+            return ResponseEntity.ok(reclamations);
+        } catch (Exception e) {
+            // Gérer les erreurs ici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
 
