@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/user/Desktop/jena.zip" sourcepath=""/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/user/Downloads/apache-jena-4.9.0.zip"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/user/Downloads/jena-4.9.0-source-release.zip"/>
+	<classpathentry kind="output" path="out/production/Famille_test"/>
+</classpath>
