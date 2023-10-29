@@ -117,10 +117,9 @@ public class ProduitService {
     public Produit read(String id) {
         String queryString =
                 "PREFIX r: <http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4> " +
-                        "SELECT ?nom ?description ?dateperemption WHERE { " +
+                        "SELECT ?nom ?description WHERE { " +
                         "  <" + NAMESPACE + id + "> r:nom ?nom . " +
                         "  <" + NAMESPACE + id + "> r:description ?description . " +
-                        "  <" + NAMESPACE + id + "> r:dateperemption ?dateperemption . " +
                         "}";
         Query query = QueryFactory.create(queryString);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
