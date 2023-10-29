@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.ReclamationModule.Service.ArticleService;
 import tn.esprit.ReclamationModule.model.Article;
+import tn.esprit.ReclamationModule.model.Reclamation;
 
 
 import java.util.Date;
@@ -51,6 +52,22 @@ public class ArticleController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(article);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        articleService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/search/{title}")
+    public ResponseEntity<List<Article>> searchByTitle(@PathVariable String title) {
+        try {
+            List<Article> articles = articleService.searchByTitle(title);
+            return ResponseEntity.ok(articles);
+        } catch (Exception e) {
+            // Gérer les erreurs ici
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 }
