@@ -10,11 +10,13 @@ import tn.esprit.ReclamationModule.model.Reclamation;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
 import tn.esprit.ReclamationModule.model.ReclamationDateAscComparator;
+import tn.esprit.ReclamationModule.model.Reponse;
 
 import javax.annotation.PostConstruct;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -42,16 +44,23 @@ public class ReclamationService {
         if (reclamation.getTitle() == null || reclamation.getDescription() == null) {
             throw new IllegalArgumentException("Title or Description cannot be null");
         }
+
+        String etatString = reclamation.getEtat().name().toLowerCase().replace("_", " "); // Convert enum to string
+
         String insertQueryStr =
                 "PREFIX r: <" + NAMESPACE + "> " +
                         "INSERT DATA { " +
                         "  <" + NAMESPACE + reclamation.getId() + "> r:title \"" + escapeSPARQL(reclamation.getTitle()) + "\" ." +
                         "  <" + NAMESPACE + reclamation.getId() + "> r:description \"" + escapeSPARQL(reclamation.getDescription()) + "\" ." +
+                        "  <" + NAMESPACE + reclamation.getId() + "> r:dateSoumission \"" + escapeSPARQL(reclamation.getDateSoumissionAsString()) + "\" ." +
+                        "  <" + NAMESPACE + reclamation.getId() + "> r:etat \"" + escapeSPARQL(etatString) + "\" ." +  // Add etat
                         "}";
+
         UpdateRequest insertRequest = UpdateFactory.create(insertQueryStr);
         UpdateProcessor upp = UpdateExecutionFactory.createRemote(insertRequest, sparqlUpdateEndpoint);
         upp.execute();
     }
+
 
 
     public List<Reclamation> getAllReclamations() {
@@ -93,11 +102,15 @@ public class ReclamationService {
 
     public Reclamation read(String id) {
         String queryString =
-                "PREFIX r: <http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4> " +
-                        "SELECT ?title ?description WHERE { " +
+                "PREFIX r: <" + NAMESPACE + "> " +
+                        "SELECT ?title ?description ?responseId ?responseTitle ?responseDescription WHERE { " +
                         "  <" + NAMESPACE + id + "> r:title ?title . " +
                         "  <" + NAMESPACE + id + "> r:description ?description . " +
+                        "  OPTIONAL { <" + NAMESPACE + id + "> r:a_une_reponse ?responseId . " +  // Correction ici
+                        "             ?responseId r:title ?responseTitle . " +
+                        "             ?responseId r:description ?responseDescription . }" +
                         "}";
+
         Query query = QueryFactory.create(queryString);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
 
@@ -107,12 +120,23 @@ public class ReclamationService {
             QuerySolution solution = results.nextSolution();
             reclamation.setDescription(solution.getLiteral("description").getString());
             reclamation.setTitle(solution.getLiteral("title").getString());
+
+            if(solution.contains("responseId")) { // Check if a response exists
+                Reponse reponse = new Reponse();
+                reponse.setId(solution.getResource("responseId").toString());
+                reponse.setTitle(solution.getLiteral("responseTitle").getString());
+                reponse.setDescription(solution.getLiteral("responseDescription").getString());
+                reponse.setReclamation(reclamation); // Link the response to the reclamation
+            }
         } else {
             return null;
         }
 
+        qexec.close();
         return reclamation;
     }
+
+
 
 
     public void delete(String id) {
