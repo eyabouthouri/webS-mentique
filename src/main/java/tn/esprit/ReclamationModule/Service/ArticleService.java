@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import tn.esprit.ReclamationModule.model.Article;
 import tn.esprit.ReclamationModule.model.Produit;
 import tn.esprit.ReclamationModule.model.Reclamation;
+import tn.esprit.ReclamationModule.model.ReclamationDateAscComparator;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -108,6 +109,50 @@ public class ArticleService {
         }
 
         return article;
+    }
+    public void delete(String id) {
+        String deleteQueryStr =
+                "PREFIX r: <http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4> " +
+                        "DELETE WHERE { " +
+                        "  <" + NAMESPACE + id + "> ?property ?value . " +
+                        "}";
+        UpdateRequest deleteRequest = UpdateFactory.create(deleteQueryStr);
+
+        // Use the correct SPARQL update endpoint
+        UpdateProcessor deleteProcessor = UpdateExecutionFactory.createRemote(deleteRequest, sparqlUpdateEndpoint);
+
+        deleteProcessor.execute();
+    }
+
+    public List<Article> searchByTitle(String title) {
+        String queryStr =
+                "PREFIX r: <" + NAMESPACE + "> " +
+                        "SELECT ?id ?title ?description WHERE { " +
+                        "  ?id r:title ?title . " +
+                        "  ?id r:contenu ?contenu . " +
+                        "  FILTER (regex(?title, '" + title + "', 'i'))" +
+                        "}";
+
+        Query query = QueryFactory.create(queryStr);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
+
+        List<Article> articles = new ArrayList<>();
+
+        try {
+            ResultSet results = qexec.execSelect();
+            while (results.hasNext()) {
+                QuerySolution sol = results.nextSolution();
+                Article article = new Article();
+                article.setId(sol.getResource("id").toString());
+                article.setTitle(sol.getLiteral("title").getString());
+                article.setContenu(sol.getLiteral("contenu").getString());
+                articles.add(article);
+            }
+        } finally {
+            qexec.close();
+        }
+
+        return articles;
     }
 
 
