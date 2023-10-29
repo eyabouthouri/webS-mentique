@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/articles")
 public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ReclamationController.class);
