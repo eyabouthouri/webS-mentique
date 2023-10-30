@@ -62,11 +62,11 @@ public class CommentaireController {
             logger.error("Error fetching response for reclamation: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
+    }*/
     @GetMapping("/all")
     public ResponseEntity<List<Commentaire>> getAllReponses() {
         try {
-            List<Commentaire> commentaires = commentaireService.getAllReponses();
+            List<Commentaire> commentaires = commentaireService.getAllComments();
             if (commentaires.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // No data found
             }
@@ -75,7 +75,7 @@ public class CommentaireController {
             logger.error("Error fetching all responses: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }*/
+    }
 
 
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import tn.esprit.ReclamationModule.model.Article;
 import tn.esprit.ReclamationModule.model.Commentaire;
 
-import javax.management.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,5 +42,63 @@ public class CommentaireService {
         }
         return input.replace("\\", "\\\\").replace("\"", "\\\"");
     }
+
+
+    public List<Commentaire> getAllComments() {
+        String queryString =
+                "PREFIX r: <" + NAMESPACE + "> " +
+                        "SELECT ?responseId ?contenu  ?ArticleId WHERE { " +
+                        "  ?commentaireId r:a_une_reponse ?ArticleId . " +
+                        "}";
+
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
+
+        List<Commentaire> commentaires = new ArrayList<>();
+        ResultSet results = qexec.execSelect();
+        while (results.hasNext()) {
+            QuerySolution solution = results.nextSolution();
+            Commentaire commentaire = new Commentaire();
+            commentaire.setId(solution.getResource("commentaireId").toString());
+            commentaire.setContenu(solution.getLiteral("contenu").getString());
+
+
+            Article article = new Article();
+            article.setId(solution.getResource("ArticleId").toString());
+            commentaire.setArticle(article);
+
+            commentaires.add(commentaire);
+        }
+        qexec.close();
+        return commentaires;
+    }
+
+
+  /*  public Commentaire getCommentById(String id) {
+        String queryString = "PREFIX r: <" + NAMESPACE + "> " +
+                "SELECT ?contenu  WHERE { " +
+                "  <" + NAMESPACE + id + "> r:contenu ?contenu . " +
+                "}";
+
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
+        Article article = null;
+        ResultSet results = qexec.execSelect();
+
+        if (results.hasNext()) {
+            QuerySolution solution = results.nextSolution();
+            article = new Article();
+            article.setId(id);
+            article.setTitle(solution.getLiteral("title").getString());
+            article.setContenu(solution.getLiteral("contenu").getString());
+        } else {
+            System.out.println("No article found for ID: " + id);
+        }
+
+        qexec.close();
+        return article;
+    }*/
+
+
 
 }
