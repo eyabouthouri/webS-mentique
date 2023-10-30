@@ -46,6 +46,8 @@ public class ArticleService {
                         "INSERT DATA { " +
                         "  <" + NAMESPACE + article.getId() + "> r:title \"" + escapeSPARQL(article.getTitle()) + "\" ." +
                         "  <" + NAMESPACE + article.getId() + "> r:contenu \"" + escapeSPARQL(article.getContenu()) + "\" ." +
+                        "  <" + NAMESPACE + article.getId() + "> r:auteur \"" + escapeSPARQL(article.getAuteur()) + "\" ." +
+                        "  <" + NAMESPACE + article.getId() + "> r:DatePublication \"" + escapeSPARQL(article.getDatePublication()) + "\" ." +
                         "}";
         UpdateRequest insertRequest = UpdateFactory.create(insertQueryStr);
         UpdateProcessor upp = UpdateExecutionFactory.createRemote(insertRequest, sparqlUpdateEndpoint);
@@ -124,10 +126,10 @@ public class ArticleService {
         deleteProcessor.execute();
     }
 
-    public List<Article> searchByTitle(String title) {
+    public List<Article> getArticleByTitle(String title) {
         String queryStr =
                 "PREFIX r: <" + NAMESPACE + "> " +
-                        "SELECT ?id ?title ?description WHERE { " +
+                        "SELECT ?id ?title ?contenu WHERE { " +
                         "  ?id r:title ?title . " +
                         "  ?id r:contenu ?contenu . " +
                         "  FILTER (regex(?title, '" + title + "', 'i'))" +
@@ -153,7 +155,10 @@ public class ArticleService {
         }
 
         return articles;
+
+
     }
+
 
 
 
