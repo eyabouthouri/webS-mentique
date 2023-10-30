@@ -33,12 +33,6 @@ public class RdvService {
         if (rendezVous.getMedecin() == null || rendezVous.getMedecin().getMedecinId() == null) {
             throw new IllegalArgumentException("The linked Medecin ID must be provided when creating a rdv.");
         }
-        List<Date> existingDates = getExistingDatesForMedecin(rendezVous.getMedecin().getMedecinId());
-
-        // Vérifiez si la date du nouveau rendez-vous existe déjà
-        if (existingDates.contains(rendezVous.getDateRdv())) {
-            throw new IllegalArgumentException("Date conflict: Appointment already exists for this date.");
-        }
 
         String insertQueryStr =
                 "PREFIX r: <" + NAMESPACE + "> " +

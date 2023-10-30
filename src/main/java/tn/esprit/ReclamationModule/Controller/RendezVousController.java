@@ -17,8 +17,8 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/rdv")
 @CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/rdv")
 public class RendezVousController {
     private static final Logger logger = LoggerFactory.getLogger(MedecinController.class);
 
