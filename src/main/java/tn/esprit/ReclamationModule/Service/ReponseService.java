@@ -54,10 +54,15 @@ public class ReponseService {
             reponse.setId(solution.getResource("responseId").toString());
             reponse.setTitle(solution.getLiteral("title").getString());
             reponse.setDescription(solution.getLiteral("description").getString());
+
             Reclamation reclamation = getReclamationById(id);
+
+            if (reclamation == null) {
+                throw new RuntimeException("Aucune réclamation trouvée avec l'ID: " + id);
+            }
+
             reponse.setReclamation(reclamation);
-            reclamation.setId(id);
-            reponse.setReclamation(reclamation);
+
             System.out.println("Fetching response for reclamation with ID: " + id);
         }
 
@@ -76,12 +81,15 @@ public class ReponseService {
         QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
         Reclamation reclamation = null;
         ResultSet results = qexec.execSelect();
+
         if (results.hasNext()) {
             QuerySolution solution = results.nextSolution();
             reclamation = new Reclamation();
             reclamation.setId(id);
             reclamation.setTitle(solution.getLiteral("title").getString());
             reclamation.setDescription(solution.getLiteral("description").getString());
+        } else {
+            System.out.println("No reclamation found for ID: " + id);
         }
 
         qexec.close();

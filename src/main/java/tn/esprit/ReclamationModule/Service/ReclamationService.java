@@ -92,7 +92,6 @@ public class ReclamationService {
 
         return reclamations;
     }
-
     private String escapeSPARQL(String input) {
         if (input == null) {
             return ""; // or however you want to handle null input
