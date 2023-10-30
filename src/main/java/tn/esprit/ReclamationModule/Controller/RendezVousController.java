@@ -10,11 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 import java.util.List;
+
 
 
 @RestController
 @RequestMapping("/api/rdv")
+@CrossOrigin(origins = "http://localhost:4200")
 public class RendezVousController {
     private static final Logger logger = LoggerFactory.getLogger(MedecinController.class);
 
@@ -35,6 +39,7 @@ public class RendezVousController {
         rdvService.create(rdv);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @GetMapping("/all/{id}")
     public ResponseEntity<List<RendezVous>> getAllRdv(@PathVariable("id") String id) {
         try {
@@ -46,6 +51,16 @@ public class RendezVousController {
         } catch (Exception e) {
             logger.error("Error fetching reclamations: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }}
+        }
+    }
 
+    @GetMapping("existingdates/{medecinId}")
+    public List<Date> getExistingDatesForMedecin(@PathVariable String medecinId) {
+        return rdvService.getExistingDatesForMedecin(medecinId);
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        rdvService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }
