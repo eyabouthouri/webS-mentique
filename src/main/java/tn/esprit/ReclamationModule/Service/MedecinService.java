@@ -39,7 +39,7 @@ public class MedecinService {
                         "  <" + NAMESPACE + medecin.getMedecinId() + "> r:nom \"" + escapeSPARQL(medecin.getNom()) + "\" ." +
                         "  <" + NAMESPACE + medecin.getMedecinId() + "> r:prenom \"" + escapeSPARQL(medecin.getPrenom()) + "\" ." +
                         "  <" + NAMESPACE + medecin.getMedecinId() + "> r:adresse \"" + escapeSPARQL(medecin.getAdresse()) + "\" ." +
-                            "  <" + NAMESPACE + medecin.getMedecinId() + "> r:specialite \"" + escapeSPARQL(medecin.getSpecialite()) + "\" ." +
+                        "  <" + NAMESPACE + medecin.getMedecinId() + "> r:specialite \"" + escapeSPARQL(medecin.getSpecialite()) + "\" ." +
                         "  <" + NAMESPACE + medecin.getMedecinId() + "> r:tel \"" + escapeSPARQL(String.valueOf(medecin.getTel())) + "\" ." +
 
                         "}";
@@ -140,37 +140,42 @@ public class MedecinService {
         deleteProcessor.execute();
     }
 
-
-    public Medecin getMedecinById(String medecinId) {
-        String selectQueryStr =
+    public List<Medecin> searchByNom(String nom) {
+        String queryStr =
                 "PREFIX r: <" + NAMESPACE + "> " +
-                        "SELECT ?nom ?prenom ?adresse ?specialite ?tel WHERE { " +
-                        "  <" + NAMESPACE + medecinId + "> r:nom ?nom ." +
-                        "  <" + NAMESPACE + medecinId + "> r:prenom ?prenom ." +
-                        "  <" + NAMESPACE + medecinId + "> r:adresse ?adresse ." +
-                        "  <" + NAMESPACE + medecinId + "> r:specialite ?specialite ." +
-                        "  <" + NAMESPACE + medecinId + "> r:tel ?tel ." +
+                        "SELECT ?medecinId ?nom ?prenom ?adresse ?tel ?specialite WHERE { " +
+                        "  ?medecinId r:nom ?nom . " +
+                        "  ?medecinId r:prenom ?prenom . " +
+                        "  ?medecinId r:adresse ?adresse . " +
+                        "  ?medecinId r:tel ?tel . " +
+                        "  ?medecinId r:specialite ?specialite . " +
+                        "  FILTER (regex(?prenom, '" + nom + "', 'i'))" +
                         "}";
 
-        Query query = QueryFactory.create(selectQueryStr);
+        Query query = QueryFactory.create(queryStr);
         QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlQueryEndpoint, query);
 
-        Medecin medecin = new Medecin(); // Create a Medecin instance to populate
+        List<Medecin> medecins = new ArrayList<>();
 
         try {
             ResultSet results = qexec.execSelect();
-            if (results.hasNext()) {
+            while (results.hasNext()) {
                 QuerySolution sol = results.nextSolution();
+                Medecin medecin = new Medecin();
+                medecin.setMedecinId(sol.getResource("medecinId").toString());
                 medecin.setNom(sol.getLiteral("nom").getString());
                 medecin.setPrenom(sol.getLiteral("prenom").getString());
                 medecin.setAdresse(sol.getLiteral("adresse").getString());
-                medecin.setSpecialite(sol.getLiteral("specialite").getString());
                 medecin.setTel(sol.getLiteral("tel").getInt());
+                medecin.setSpecialite(sol.getLiteral("specialite").getString());
+
+                medecins.add(medecin);
             }
         } finally {
             qexec.close();
         }
 
-        return medecin;
+        return medecins;
     }
+
 }

@@ -63,6 +63,16 @@ public class MedecinController {
         medecinService.delete(id);
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/search/{prenom}")
+    public ResponseEntity<List<Medecin>> searchByTitle(@PathVariable String prenom) {
+        try {
+            List<Medecin> medecins = medecinService.searchByNom(prenom);
+
+            return ResponseEntity.ok(medecins);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
 }
