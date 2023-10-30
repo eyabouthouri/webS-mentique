@@ -60,13 +60,17 @@ public class ArticleController {
         articleService.delete(id);
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/search/{title}")
-    public ResponseEntity<List<Article>> searchByTitle(@PathVariable String title) {
+    @GetMapping("/get/{title}")
+    public ResponseEntity<List<Article>> getbytitle(@PathVariable String title) {
         try {
-            List<Article> articles = articleService.searchByTitle(title);
+            List<Article> articles = articleService.getArticleByTitle(title);
+            System.out.println(articles);
+            if (articles.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
             return ResponseEntity.ok(articles);
         } catch (Exception e) {
-            // Gérer les erreurs ici
+            logger.error("Error fetching Product: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

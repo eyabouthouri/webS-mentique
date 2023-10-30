@@ -1,11 +1,17 @@
 package tn.esprit.ReclamationModule.Service;
 
+import org.apache.jena.query.*;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
 import org.springframework.stereotype.Service;
+import tn.esprit.ReclamationModule.model.Article;
 import tn.esprit.ReclamationModule.model.Commentaire;
+
+import javax.management.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CommentaireService {

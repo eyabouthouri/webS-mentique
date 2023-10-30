@@ -11,6 +11,7 @@ import tn.esprit.ReclamationModule.model.Commentaire;
 import org.springframework.http.ResponseEntity;
 
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -48,6 +49,33 @@ public class CommentaireController {
     }
 
 
+
+   /* @GetMapping("/byReclamation/{id}")
+    public ResponseEntity<Commentaire> getReponseByReclamationId(@PathVariable("id") String id) {
+        try {
+            Commentaire commentaire = commentaireService.getReponseByReclamationId(id);
+            if (commentaire == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(commentaire);
+        } catch (Exception e) {
+            logger.error("Error fetching response for reclamation: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Commentaire>> getAllReponses() {
+        try {
+            List<Commentaire> commentaires = commentaireService.getAllReponses();
+            if (commentaires.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();  // No data found
+            }
+            return ResponseEntity.ok(commentaires);
+        } catch (Exception e) {
+            logger.error("Error fetching all responses: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }*/
 
 
 
