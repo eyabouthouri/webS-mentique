@@ -70,6 +70,7 @@
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVousAvec">
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Medecin"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Patient"/>
         <rdfs:range rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#User"/>
     </owl:ObjectProperty>
 
@@ -108,15 +109,6 @@
 
 
 
-    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#a_un_medecin -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#a_un_medecin">
-        <rdfs:range rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Medecin"/>
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous"/>
-    </owl:ObjectProperty>
-
-
-
     <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#a_une_reponse -->
 
     <owl:ObjectProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#a_une_reponse">
@@ -149,7 +141,6 @@
     <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Adresse -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Adresse">
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Medecin"/>
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Patient"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
@@ -183,6 +174,15 @@
 
 
 
+    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateHeure -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateHeure">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Rendez-vous"/>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+    </owl:DatatypeProperty>
+
+
+
     <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateNaissance -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateNaissance">
@@ -205,15 +205,6 @@
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DatePublication">
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Article"/>
-        <rdfs:range rdf:resource="&xsd;dateTime"/>
-    </owl:DatatypeProperty>
-
-
-
-    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateRdv -->
-
-    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#DateRdv">
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous"/>
         <rdfs:range rdf:resource="&xsd;dateTime"/>
     </owl:DatatypeProperty>
 
@@ -251,6 +242,7 @@
     <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Motif -->
 
     <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Motif">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Rendez-vous"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
 
@@ -263,7 +255,6 @@
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Medecin"/>
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Patient"/>
         <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Produit"/>
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous"/>
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
 
@@ -289,12 +280,11 @@
 
 
 
-    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Tel -->
+    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Statut -->
 
-    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Tel">
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Medecin"/>
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous"/>
-        <rdfs:range rdf:resource="&xsd;int"/>
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Statut">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Rendez-vous"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
 
 
@@ -388,9 +378,9 @@
 
 
 
-    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous -->
+    <!-- http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Rendez-vous -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#RendezVous"/>
+    <owl:Class rdf:about="http://www.semanticweb.org/dorsaf/ontologies/2023/9/untitled-ontology-4#Rendez-vous"/>
 
 
 
